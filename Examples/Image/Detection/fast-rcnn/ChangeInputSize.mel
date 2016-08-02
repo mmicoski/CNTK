@@ -1,0 +1,7 @@
+m1 = LoadModel("$curModel$", format="cntk")
+SetDefaultModel(m1)
+
+newFeatures = ImageInput(448, 448, 3, tag=feature, imageLayout="cudnn")
+SetInput(conv1.c, 1, newFeatures)
+
+SaveModel(m1, "$newModel$", format="cntk")

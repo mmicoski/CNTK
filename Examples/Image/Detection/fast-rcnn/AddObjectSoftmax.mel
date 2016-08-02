@@ -1,0 +1,104 @@
+
+#load pre-trained model
+model1 = LoadModel("$CurModel$") #, format=cntk)
+SetDefaultModel(model1)
+#DumpModel(model1, "$RootDir$/dump_originalModel.txt", includeData =true)
+
+# params from original ndl file
+fcWScale = 3.2
+fcBValue = 1
+labelDimNew=21
+
+# add new final layer
+newL = DnnLastLayer(4096, labelDimNew, h2_d, fcWScale, fcBValue)
+SetInput(CE, 0, labelsNew)
+SetInput(CE, 1, newL.z)
+SetInput(Err, 0, labelsNew)
+SetInput(Err, 1, newL.z)
+SetProperty(newL.z, "output", "true")
+
+#remove old final layer (note:make sure these deletes happen in reverse order)
+DeleteNode(OutputNodes.z) 
+DeleteNode(OutputNodes.t)
+DeleteNode(OutputNodes.b)
+DeleteNode(OutputNodes.W)
+DeleteNode(labels)
+DeleteNode(pool3)
+
+#rename nodes to have same name as before. don't think this is necessary. (old comment: that way can use same NDL file for training)
+Rename(labelsNew, labels)
+Rename(newL.*, OutputNodes.*)
+
+####### turn off gradient / set lrMult to 0
+
+SetProperty(pool1, "NeedsGradient", "false")
+SetProperty(pool2, "NeedsGradient", "false")
+SetProperty(roi, "NeedsGradient", "false")
+
+SetProperty(conv1.W, "NeedsGradient", "false")
+SetProperty(conv1.b, "NeedsGradient", "false")
+SetProperty(conv1.c, "NeedsGradient", "false")
+SetProperty(conv1.z, "NeedsGradient", "false")
+SetProperty(conv1.y, "NeedsGradient", "false")
+
+SetProperty(conv2.W, "NeedsGradient", "false")
+SetProperty(conv2.b, "NeedsGradient", "false")
+SetProperty(conv2.c, "NeedsGradient", "false")
+SetProperty(conv2.z, "NeedsGradient", "false")
+SetProperty(conv2.y, "NeedsGradient", "false")
+
+SetProperty(conv3.W, "NeedsGradient", "false")
+SetProperty(conv3.b, "NeedsGradient", "false")
+SetProperty(conv3.c, "NeedsGradient", "false")
+SetProperty(conv3.z, "NeedsGradient", "false")
+SetProperty(conv3.y, "NeedsGradient", "false")
+
+SetProperty(conv4.W, "NeedsGradient", "false")
+SetProperty(conv4.b, "NeedsGradient", "false")
+SetProperty(conv4.c, "NeedsGradient", "false")
+SetProperty(conv4.z, "NeedsGradient", "false")
+SetProperty(conv4.y, "NeedsGradient", "false")
+
+SetProperty(conv5.W, "NeedsGradient", "false")
+SetProperty(conv5.b, "NeedsGradient", "false")
+SetProperty(conv5.c, "NeedsGradient", "false")
+SetProperty(conv5.z, "NeedsGradient", "false")
+SetProperty(conv5.y, "NeedsGradient", "false")
+
+SetProperty(pool1, "learningRateMultiplier", "0")
+SetProperty(pool2, "learningRateMultiplier", "0")
+SetProperty(roi, "learningRateMultiplier", "0")
+
+SetProperty(conv1.W, "learningRateMultiplier", "0")
+SetProperty(conv1.b, "learningRateMultiplier", "0")
+SetProperty(conv1.c, "learningRateMultiplier", "0")
+SetProperty(conv1.z, "learningRateMultiplier", "0")
+SetProperty(conv1.y, "learningRateMultiplier", "0")
+
+SetProperty(conv2.W, "learningRateMultiplier", "0")
+SetProperty(conv2.b, "learningRateMultiplier", "0")
+SetProperty(conv2.c, "learningRateMultiplier", "0")
+SetProperty(conv2.z, "learningRateMultiplier", "0")
+SetProperty(conv2.y, "learningRateMultiplier", "0")
+
+SetProperty(conv3.W, "learningRateMultiplier", "0")
+SetProperty(conv3.b, "learningRateMultiplier", "0")
+SetProperty(conv3.c, "learningRateMultiplier", "0")
+SetProperty(conv3.z, "learningRateMultiplier", "0")
+SetProperty(conv3.y, "learningRateMultiplier", "0")
+
+SetProperty(conv4.W, "learningRateMultiplier", "0")
+SetProperty(conv4.b, "learningRateMultiplier", "0")
+SetProperty(conv4.c, "learningRateMultiplier", "0")
+SetProperty(conv4.z, "learningRateMultiplier", "0")
+SetProperty(conv4.y, "learningRateMultiplier", "0")
+
+SetProperty(conv5.W, "learningRateMultiplier", "0")
+SetProperty(conv5.b, "learningRateMultiplier", "0")
+SetProperty(conv5.c, "learningRateMultiplier", "0")
+SetProperty(conv5.z, "learningRateMultiplier", "0")
+SetProperty(conv5.y, "learningRateMultiplier", "0")
+
+
+
+SaveModel(model1, $NewModel$, format=cntk)

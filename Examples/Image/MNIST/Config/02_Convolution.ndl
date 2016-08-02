@@ -9,10 +9,14 @@ ndlMnistMacros = [
     imageH = 28
     labelDim = 10
 
+    roiDim = 50
+
     features = ImageInput(imageW, imageH, 1, imageLayout=$imageLayout$)
     featScale = Constant(0.00390625)
     featScaled = Scale(featScale, features)
     labels = InputValue(labelDim)
+    
+    rois = Input(roiDim, tag="feature")
 ]
 
 DNN=[
@@ -56,7 +60,7 @@ DNN=[
     # DNNImageSigmoidLayer and DNNLayer are defined in Macros.ndl
     h1 = DNNImageSigmoidLayer(7, 7, cMap2, h1Dim, pool2, 1)
     ol = DNNLayer(h1Dim, labelDim, h1, 1)
-    
+
     ce = CrossEntropyWithSoftmax(labels, ol)
     errs = ErrorPrediction(labels, ol)
 

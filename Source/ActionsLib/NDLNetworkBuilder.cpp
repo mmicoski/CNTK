@@ -256,11 +256,22 @@ void NDLNodeEvaluatorImpl<ElemType>::Evaluate(NDLNode<ElemType>* node, const wst
             size_t img_width = node->GetOptionalParameter("imageWidth", "0");
             size_t img_height = node->GetOptionalParameter("imageHeight", "0");
             size_t img_channels = node->GetOptionalParameter("imageChannels", "0");
-            ImageLayoutKind imageLayoutKind = ImageLayoutKindFrom(node->GetOptionalParameter("imageLayout", "HWC"));
+            ImageLayoutKind imageLayoutKind = ImageLayoutKindFrom(node->GetOptionalParameter("imageLayout", "CHW"));
 
             nodePtr = builder.LegacyReshape(NULL, num_rows, ImageDimensions::AsTensorShape(img_width, img_height, img_channels, imageLayoutKind), name);
         }
     }
+
+	else if (cnNodeType == L"ReconcileDynamicAccess" /*OperationNameOf(ReshapeNode)*/)
+	{
+		nodeParamCount = 2;
+		nodeParamStart = 0;
+
+		if (pass == ndlPassInitial)
+		{
+			nodePtr = builder.ReconcileDynamicAxis(NULL, NULL, name);
+		}
+	}
     else if (cnNodeType == OperationNameOf(PastValueNode) ||
              cnNodeType == OperationNameOf(FutureValueNode))
     {
@@ -488,6 +499,29 @@ void NDLNodeEvaluatorImpl<ElemType>::Evaluate(NDLNode<ElemType>* node, const wst
                                              horizontalSubsample, verticalSubsample, imageLayoutKind, name);
         }
     }
+	else if (cnNodeType == OperationNameOf(ROIPoolingNode))
+	{
+
+		nodeParamCount = 2;
+		nodeParamStart = 0;
+
+		if (pass == ndlPassInitial)
+		{
+
+			int id = 2; // skip inputValueNode and inputROINode
+
+			// evaluate only scalar parameters
+			vector<void*> params = EvaluateParameters(node, baseName, id, parameter.size() - id, pass);
+
+			id = 0; // reset counter because the params array starts at zero
+			size_t H = ((NDLNode<ElemType>*) params[id++])->GetScalar();
+			size_t W = ((NDLNode<ElemType>*) params[id++])->GetScalar();
+
+			ImageLayoutKind imageLayoutKind = ImageLayoutKindFrom(node->GetOptionalParameter("imageLayout", "CHW"));
+
+			nodePtr = builder.ROIPooling(NULL, NULL, H, W, imageLayoutKind, name);
+		}
+	}
     else if (cnNodeType == OperationNameOf(BatchNormalizationNode))
     {
         if (parameter.size() != 5)
