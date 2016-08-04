@@ -241,10 +241,10 @@ __global__ void kROIPoolingForward(const int nthreads,
 		roi_data += n * 4;
 
 		// roi data is relative to original image size
-		int roi_start_w = round(roi_data[0] * width);
-		int roi_start_h = round(roi_data[1] * height);
-		int roi_width = (int)max(round(roi_data[2] * width), 1.0);
-		int roi_height = (int)max(round(roi_data[3] * height), 1.0);
+		int roi_start_w = std::round(roi_data[0] * width);
+		int roi_start_h = std::round(roi_data[1] * height);
+		int roi_width = (int)max(std::round(roi_data[2] * width), 1.0);
+		int roi_height = (int)max(std::round(roi_data[3] * height), 1.0);
 		
 		float winH = static_cast<float>(roi_height)
 			/ static_cast<float>(pooled_height);
@@ -336,10 +336,10 @@ __global__ void kROIPoolingBackward(const int nthreads,
 			const ElemType* roi_offset = roi_data + roi_n * 4;
 
 			// roi data is relative to original image size
-			int roi_start_w = round(roi_offset[0] * width);
-			int roi_start_h = round(roi_offset[1] * height);
-			int roi_width = (int)max(round(roi_offset[2] * width), 1.0);
-			int roi_height = (int)max(round(roi_offset[3] * height), 1.0);
+			int roi_start_w = std::round(roi_offset[0] * width);
+			int roi_start_h = std::round(roi_offset[1] * height);
+			int roi_width = (int)max(std::round(roi_offset[2] * width), 1.0);
+			int roi_height = (int)max(std::round(roi_offset[3] * height), 1.0);
 
 			// skip this ROI if it doesn't contain our input location.
 			const bool in_roi = (w >= roi_start_w && w < roi_start_w + roi_width &&
