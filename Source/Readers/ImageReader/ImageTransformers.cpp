@@ -314,16 +314,12 @@ StreamDescription PadTransformer::Transform(const StreamDescription& inputStream
 void PadTransformer::Apply(size_t id, cv::Mat &mat)
 {
 	UNUSED(id);
-	double hdiff = floor((m_targetH - mat.rows) / 2.0);
-	double wdiff = (m_targetW - mat.cols) / 2.0;
+	double hdiff = round((m_targetH - mat.rows) / 2.0);
+	double wdiff = round((m_targetW - mat.cols) / 2.0);
 
 	// make sure the padded sizes are actually bigger than the input image sizes.
 	assert(hdiff >= 0);
 	assert(wdiff >= 0);
-
-	// image must be scaled so that the max dimension can't be
-	// multiplied up to the targetMax by an integer.
-	//assert(floor(m_targetMax / imageMax) == 1);
 
 	int top = (int)hdiff, 
 		bottom = (int)m_targetH - top - mat.rows,

@@ -537,7 +537,7 @@ public:
 		if (isFinalValidationPass && m_imageLayout != ImageLayoutKind::CHW)
 			InvalidArgument("ROIPoolingNode only supports CHW image layout.");
 
-		fprintf(stderr, "ROI in dims: W: %d, H: %d, C: %d\n", inDims.m_width, inDims.m_height, inDims.m_numChannels);
+		//fprintf(stderr, "ROI in dims: W: %d, H: %d, C: %d\n", inDims.m_width, inDims.m_height, inDims.m_numChannels);
 		
 		if (isFinalValidationPass && (inDims.m_width < m_outW || inDims.m_height < m_outH))
 			InvalidArgument("ROIPoolingNode: inputWidth must >= windowWidth and inputHeight must >= windowHeight.");

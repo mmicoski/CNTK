@@ -8,6 +8,7 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <math_constants.h>
+#include <math_functions.h>
 
 namespace Microsoft { namespace MSR { namespace CNTK {
 
@@ -312,17 +313,22 @@ __global__ void kROIPoolingBackward(const int nthreads,
 		// (n, c, h, w) is an element in the input image
 		// n is the image index
 
-		int img_size = channels * width * height;
-		int n = index / img_size;
+		//int img_size = channels * width * height;
+		//int n = index / img_size;
 
-		int effective_index = index % img_size;
-		int w = effective_index % width;
-		int h = (effective_index / width) % height;
-		int c = effective_index / width / height;
+		//int effective_index = index % img_size;
+		//int w = effective_index % width;
+		//int h = (effective_index / width) % height;
+		//int c = effective_index / width / height;
+
+        int w = index % width;
+        int h = (index / width) % height;
+        int c = (index / width / height) % channels;
+        int n = index / width / height / channels;
 
 		// compute range of ROIs corresponding to this image:
 		int roi_min = n * num_rois;
-		int roi_max = (n + 1) * num_rois - 1;
+		int roi_max = (n + 1) * num_rois;
 
 		ElemType gradient = 0;
 
@@ -366,7 +372,7 @@ __global__ void kROIPoolingBackward(const int nthreads,
 
 			for (int ph = phstart; ph < phend; ph++) {
 				for (int pw = pwstart; pw < pwend; pw++) {
-					if (offset_argmax[ph * pooled_width + pw] == (h*width + w)) {
+					if (offset_argmax[ph * pooled_width + pw] == (h * width + w)) {
 						gradient += offset_pool_grad[ph * pooled_width + pw];
 					}
 				}
