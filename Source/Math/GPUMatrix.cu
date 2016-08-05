@@ -4386,17 +4386,17 @@ void GPUMatrix<ElemType>::TensorOp(ElemType beta, const GPUMatrix<ElemType>& a, 
         assert(reducingStrides[1][0] == 0);
         auto ARows = regularOpDims[0];    // vertical steps
         auto ACols = reducingOpDims[0];   // horizontal steps (reduction)
-        //auto ALd = reducingStrides[0][0]; // horizontal step width through matrix
+        auto ALd = reducingStrides[0][0]; // horizontal step width through matrix
         cublasHandle_t cuHandle = GetCublasHandle(a.GetComputeDeviceId());
 		//if (){
-			CUBLAS_CALL(cublas_gemv(cuHandle, CUBLAS_OP_N, (int)ARows, (int)ACols, &alpha, a.Data() + offsets[0], GetOnesVector<ElemType>(ACols, a.GetComputeDeviceId())->Data(), 
-				&beta, Data() + offsets[1]));
+		//CUBLAS_CALL(cublas_gemv(cuHandle, CUBLAS_OP_N, (int)ARows, (int)ACols, &alpha, a.Data() + offsets[0], GetOnesVector<ElemType>(ACols, a.GetComputeDeviceId())->Data(), 
+		//		&beta, Data() + offsets[1]));
 		//}
 		//else{
-		//	CUBLAS_CALL(cublas_gemm(cuHandle, CUBLAS_OP_N, CUBLAS_OP_N, (int) /*CRows=*/ARows, /*CCols=*/1, (int)ACols, &alpha,
-		//		/*A00=*/a.Data() + offsets[0], (int)ALd,
-		//		/*B00=*/GetOnesVector<ElemType>(ACols, a.GetComputeDeviceId())->Data(), (int) /*BRows=*/ACols, &beta,
-		//		/*C00=*/Data() + offsets[1], (int) /*CRows=*/ARows));
+		CUBLAS_CALL(cublas_gemm(cuHandle, CUBLAS_OP_N, CUBLAS_OP_N, (int) /*CRows=*/ARows, /*CCols=*/1, (int)ACols, &alpha,
+				/*A00=*/a.Data() + offsets[0], (int)ALd,
+				/*B00=*/GetOnesVector<ElemType>(ACols, a.GetComputeDeviceId())->Data(), (int) /*BRows=*/ACols, &beta,
+				/*C00=*/Data() + offsets[1], (int) /*CRows=*/ARows));
 		//}
         return;
     }
