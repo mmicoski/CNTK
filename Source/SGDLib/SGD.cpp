@@ -2003,19 +2003,19 @@ template <class ElemType>
     {
         // multiply by actualMBSize so that it's invariant to minibatch size since learning rate is per sample
 
-        //Matrix<ElemType>::ScaleAndAdd((ElemType)learnRatePerSample * (ElemType)(L2RegWeight), functionValues, (ElemType)momentum, smoothedGradient);
-		Matrix<ElemType>::ScaleAndAdd(0.0001f * (ElemType)learnRatePerSample, functionValues, (ElemType)momentum, smoothedGradient);
+        Matrix<ElemType>::ScaleAndAdd((ElemType)learnRatePerSample * (ElemType)(L2RegWeight), functionValues, gradientValues);
+		//Matrix<ElemType>::ScaleAndAdd(0.0001f * (ElemType)learnRatePerSample, functionValues, (ElemType)momentum, smoothedGradient);
 	}
 	else
 	{
-		Matrix<ElemType>::ScaleAndAdd(0.f, functionValues, (ElemType)momentum, smoothedGradient);
+		Matrix<ElemType>::ScaleAndAdd(0.f, functionValues, gradientValues);
 	}
 
     if (adpType == GradientsUpdateType::None)
     {
 		ElemType disableMomentum = 1.f;
         smoothedGradient.NormalGrad(gradientValues, functionValues,
-                                    (ElemType)(learnRatePerSample), (ElemType)disableMomentum, useNesterovMomentum);
+                                    (ElemType)(learnRatePerSample), (ElemType)momentum, useNesterovMomentum);
     }
     else if (adpType == GradientsUpdateType::AdaGrad ||
              (adpType == GradientsUpdateType::RmsProp && gradientValues.GetMatrixType() == MatrixType::SPARSE) ||
