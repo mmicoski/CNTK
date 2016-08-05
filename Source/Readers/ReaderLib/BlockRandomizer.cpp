@@ -190,7 +190,6 @@ bool BlockRandomizer::GetNextSequenceDescriptions(size_t sampleCount, std::vecto
         return true;
     }
 
-	size_t theoryCount = sampleCount;
 
     sampleCount = std::min(sampleCount, m_epochSize + m_epochStartPosition - m_globalSamplePosition);
     assert(sampleCount != 0);
@@ -198,6 +197,8 @@ bool BlockRandomizer::GetNextSequenceDescriptions(size_t sampleCount, std::vecto
     // Check that we do not go over the sweep.
     sampleCount = std::min(sampleCount, (long)m_sweepTotalNumberOfSamples - m_globalSamplePosition % m_sweepTotalNumberOfSamples);
     assert(sampleCount != 0);
+
+	size_t theoryCount = sampleCount;
 
     // Randomizing sequences
     result = m_sequenceRandomizer->GetNextSequenceDescriptions(sampleCount, theoryCount, m_sweep);

@@ -948,7 +948,7 @@ size_t SGD<ElemType>::TrainOneEpoch(ComputationNetworkPtr net,
         if (!wasDataRead)
             actualMBSize = 0; // (undefined if !wasDataRead)
 
-		if (!actualMBSize) break;
+		//if (!actualMBSize) break;
 
         nSamplesSinceLastModelSync += actualMBSize;
 
