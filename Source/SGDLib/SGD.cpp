@@ -1165,7 +1165,7 @@ size_t SGD<ElemType>::TrainOneEpoch(ComputationNetworkPtr net,
                         LogicError("%ls %ls operation has NaNs in smoothedGradient.", node->NodeName().c_str(), node->OperationName().c_str());
 #endif
                     // BUGBUG (Issue #95): Access to net MBLayout can no longer be done if we have multiple input layouts
-                    UpdateWeights(node, smoothedGradient, m_learningRatesParam[epochNumber]/*learnRatePerSample*/,
+                    UpdateWeights(node, smoothedGradient, learnRatePerSample,
                         GetMomentumPerSample(epochNumber /*BUGBUG workaround:*/, net->GetMBLayoutPtrOfNetwork()->GetNumParallelSequences()), numSamplesInMinibatch,
                         m_L2RegWeight, m_L1RegWeight,
                         m_needAveMultiplier, m_useNesterovMomentum);
